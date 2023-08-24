@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import RegistrationScreen from './Screens/RegistrationScreen';
+import LoginScreen from './Screens/LoginScreen';
 import { useFonts, Roboto_400Regular, Roboto_700Bold, Roboto_500Medium } from '@expo-google-fonts/roboto';
 import { openBrowserAsync } from 'expo-web-browser';
 
@@ -17,7 +18,7 @@ export default function App() {
 
     return (
         <View style={styles.container}>
-            <RegistrationScreen />
+            <LoginScreen />
         </View>
     );
 }
