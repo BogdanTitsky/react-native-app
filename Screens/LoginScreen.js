@@ -14,8 +14,27 @@ import {
 } from 'react-native';
 
 const LoginScreen = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
     const [isEmailFocused, setIsEmailFocused] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleLogin = () => {
+        const formData = {
+            email,
+            password,
+        };
+
+        console.log('Form Data:', formData);
+        setEmail('');
+        setPassword('');
+        setShowPassword(false);
+        setIsEmailFocused(false);
+        setIsPasswordFocused(false);
+    };
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -31,6 +50,8 @@ const LoginScreen = () => {
                         <TextInput
                             style={[styles.input, isEmailFocused && styles.focusedInput]}
                             placeholder="Адреса електронної пошти"
+                            value={email}
+                            onChangeText={setEmail}
                             onFocus={() => setIsEmailFocused(true)}
                             onBlur={() => setIsEmailFocused(false)}
                         />
@@ -38,20 +59,22 @@ const LoginScreen = () => {
                             <TextInput
                                 style={[styles.input, isPasswordFocused && styles.focusedInput]}
                                 placeholder="Пароль"
-                                secureTextEntry
+                                secureTextEntry={!showPassword}
+                                value={password}
+                                onChangeText={setPassword}
                                 onFocus={() => setIsPasswordFocused(true)}
                                 onBlur={() => setIsPasswordFocused(false)}
                             />
                             <View style={styles.showHideContainer}>
-                                <TouchableOpacity style={styles.showHideButton}>
-                                    <Text style={textDefault}>Показати</Text>
+                                <TouchableOpacity style={styles.showHideButton} onPress={() => setShowPassword(!showPassword)}>
+                                    <Text style={textDefault}>{showPassword ? 'Сховати' : 'Показати'}</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <TouchableOpacity style={styles.registrationBtn} onPress={() => alert('Зареєстровано!')}>
+                        <TouchableOpacity style={styles.registrationBtn} onPress={handleLogin}>
                             <Text style={[textDefault, styles.registrationBtnText]}>Увійти</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.loginBtn} onPress={() => alert('Зареєстровано!')}>
+                        <TouchableOpacity style={styles.loginBtn} onPress={() => alert('Буде рут')}>
                             <Text style={textDefault}>
                                 Немає акаунту? <Text style={styles.underline}>Зареєструватися</Text>
                             </Text>
