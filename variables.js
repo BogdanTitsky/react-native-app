@@ -8,6 +8,3 @@ export const textDefault = {
     lineHeight: 18.75,
     color: darkBlue,
 };
-
-export const orangeBtn = {};
-export const orangeBtnText = {};

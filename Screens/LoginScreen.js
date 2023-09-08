@@ -12,8 +12,11 @@ import {
     View,
     KeyboardAvoidingView,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const LoginScreen = () => {
+    const navigation = useNavigation();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -34,6 +37,7 @@ const LoginScreen = () => {
         setShowPassword(false);
         setIsEmailFocused(false);
         setIsPasswordFocused(false);
+        navigation.navigate('Home', { screen: 'Posts' });
     };
 
     return (
@@ -74,9 +78,12 @@ const LoginScreen = () => {
                         <TouchableOpacity style={styles.registrationBtn} onPress={handleLogin}>
                             <Text style={[textDefault, styles.registrationBtnText]}>Увійти</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.loginBtn} onPress={() => alert('Буде рут')}>
+                        <TouchableOpacity>
                             <Text style={textDefault}>
-                                Немає акаунту? <Text style={styles.underline}>Зареєструватися</Text>
+                                Немає акаунту?{' '}
+                                <Text style={styles.underline} onPress={() => navigation.navigate('Registration')}>
+                                    Зареєструватися
+                                </Text>
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -179,8 +186,6 @@ const styles = StyleSheet.create({
     underline: {
         textDecorationLine: 'underline',
     },
-    loginBtn: {},
-    loginBtnText: {},
 });
 
 export default LoginScreen;

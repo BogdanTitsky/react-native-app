@@ -1,5 +1,4 @@
 import { useNavigation } from '@react-navigation/native';
-import { useEffect } from 'react';
 import {
     ImageBackground,
     StyleSheet,
@@ -11,17 +10,13 @@ import {
     View,
     KeyboardAvoidingView,
     Image,
-    Dimensions,
 } from 'react-native';
 
-import MapView, { Marker } from 'react-native-maps';
-
-const PostsScreen = () => {
+const CommentsScreen = () => {
     const navigation = useNavigation();
 
     return (
-
-                <View style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.profile}>
                 <Image
                     style={styles.avatar}
@@ -70,4 +65,5 @@ const styles = StyleSheet.create({
         color: 'rgba(33, 33, 33, 0.8)',
     },
 });
-export default PostsScreen;
+
+export default CommentsScreen;

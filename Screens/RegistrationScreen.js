@@ -13,8 +13,11 @@ import {
     View,
     KeyboardAvoidingView,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const RegistrationScreen = () => {
+    const navigation = useNavigation();
+
     const [login, setLogin] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -39,6 +42,7 @@ const RegistrationScreen = () => {
         setShowPassword(false);
         setIsEmailFocused(false);
         setIsPasswordFocused(false);
+        navigation.navigate('Home', { screen: 'Posts' });
     };
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -89,8 +93,10 @@ const RegistrationScreen = () => {
                         <TouchableOpacity style={styles.registrationBtn} onPress={handleRegistration}>
                             <Text style={[textDefault, styles.registrationBtnText]}>Зареєструватися</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.loginBtn} onPress={() => alert('Буде рут')}>
-                            <Text style={textDefault}>Вже є аккаунт? Увійти</Text>
+                        <TouchableOpacity>
+                            <Text style={textDefault}>
+                                Вже є аккаунт? <Text onPress={() => navigation.navigate('Login')}>Увійти</Text>
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 </ImageBackground>
@@ -188,8 +194,6 @@ const styles = StyleSheet.create({
     registrationBtnText: {
         color: 'white',
     },
-    loginBtn: {},
-    loginBtnText: {},
 });
 
 export default RegistrationScreen;
