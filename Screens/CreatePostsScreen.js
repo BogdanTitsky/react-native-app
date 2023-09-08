@@ -20,7 +20,7 @@ import {
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
-import { SimpleLineIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 {
     /* <SimpleLineIcons name="location-pin" size={24} color="black" />; */
@@ -81,11 +81,15 @@ const CreatePostsScreen = () => {
 
                         <Text style={styles.text}>Завантажте фото</Text>
                         <TextInput style={styles.input} placeholder="Назва..."></TextInput>
-                        <TextInput style={[styles.input, styles.location]} placeholder="Місцевість..."></TextInput>
+                        <View style={styles.locationWrap}>
+                            <Ionicons style={styles.locationIcon} name="ios-location-outline" size={24} color="#BDBDBD" />
+                            <TextInput style={[styles.input, styles.location]} placeholder="Місцевість..."></TextInput>
+                        </View>
                         <TouchableOpacity style={styles.registrationBtn}>
                             <Text style={[textDefault, styles.registrationBtnText]}>Увійти</Text>
                         </TouchableOpacity>
                     </View>
+
                     <TouchableOpacity style={styles.trash}>
                         <Feather name="trash-2" size={24} color="#BDBDBD" />
                     </TouchableOpacity>
@@ -137,15 +141,27 @@ const styles = StyleSheet.create({
     text: {
         marginBottom: 32,
         color: '#BDBDBD',
+        fontSize: 16,
+        fontFamily: 'Roboto_400Regular',
     },
 
     input: {
         borderColor: '#DBDBDB',
         borderBottomWidth: 1,
         height: 50,
+        fontSize: 16,
+        fontFamily: 'Roboto_400Regular',
+    },
+    locationWrap: {
+        position: 'relative',
+    },
+    locationIcon: {
+        position: 'absolute',
+        top: 13,
     },
     location: {
         marginBottom: 32,
+        paddingLeft: 28,
     },
     mapStyle: {
         width: Dimensions.get('window').width,
