@@ -15,13 +15,13 @@ import {
 } from 'react-native';
 
 import MapView, { Marker } from 'react-native-maps';
+import ProfilePost from '../Components/ProfilePost';
 
 const PostsScreen = () => {
     const navigation = useNavigation();
 
     return (
-
-                <View style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.profile}>
                 <Image
                     style={styles.avatar}
@@ -34,6 +34,7 @@ const PostsScreen = () => {
                     <Text style={styles.email}>Email</Text>
                 </View>
             </View>
+            <ProfilePost></ProfilePost>
         </View>
     );
 };
@@ -59,6 +60,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 8,
         alignItems: 'center',
+        marginBottom: 32,
     },
     login: {
         fontFamily: 'Roboto_700Bold',
