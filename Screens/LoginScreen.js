@@ -79,11 +79,8 @@ const LoginScreen = () => {
                             <Text style={[textDefault, styles.registrationBtnText]}>Увійти</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={textDefault}>
-                                Немає акаунту?{' '}
-                                <Text style={styles.underline} onPress={() => navigation.navigate('Registration')}>
-                                    Зареєструватися
-                                </Text>
+                            <Text style={textDefault} onPress={() => navigation.navigate('Registration')}>
+                                Немає акаунту? <Text style={styles.underline}>Зареєструватися</Text>
                             </Text>
                         </TouchableOpacity>
                     </View>

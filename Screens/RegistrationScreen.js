@@ -94,8 +94,8 @@ const RegistrationScreen = () => {
                             <Text style={[textDefault, styles.registrationBtnText]}>Зареєструватися</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={textDefault}>
-                                Вже є аккаунт? <Text onPress={() => navigation.navigate('Login')}>Увійти</Text>
+                            <Text style={textDefault} onPress={() => navigation.navigate('Login')}>
+                                Вже є аккаунт? <Text>Увійти</Text>
                             </Text>
                         </TouchableOpacity>
                     </View>
