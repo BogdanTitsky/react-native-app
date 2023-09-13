@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import {} from 'react-native';
 
 import React, { useState, useEffect, useRef } from 'react';
 
@@ -23,32 +24,44 @@ import {
     KeyboardAvoidingView,
     Image,
     Dimensions,
+    Platform,
 } from 'react-native';
 
 const CreatePostsScreen = () => {
     const navigation = useNavigation();
 
+    const [name, setName] = useState('');
+    const [location, setLocation] = useState('');
+
     const [hasPermission, setHasPermission] = useState(null);
     const [cameraRef, setCameraRef] = useState(null);
     const [type, setType] = useState(Camera.Constants.Type.back);
+    const [photoUri, setPhotoUri] = useState(null);
 
+    const headerOptions = {
+        headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+                <MaterialCommunityIcons name="keyboard-backspace" size={28} color="black" />
+            </TouchableOpacity>
+        ),
+        headerLeftContainerStyle: {
+            paddingLeft: 16,
+        },
+        headerTitleContainerStyle: {},
+
+        headerStyle: {
+            borderBottomColor: 'rgba(189, 189, 189, 1)',
+            borderBottomWidth: 1,
+        },
+        title: 'Створити публікацію',
+        headerTitleStyle: {
+            fontFamily: 'Roboto_500Medium',
+            lineHeight: 22,
+        },
+        headerTitleAlign: 'center',
+    };
     useEffect(() => {
-        navigation.setOptions({
-            headerLeft: () => (
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <MaterialCommunityIcons name="keyboard-backspace" size={28} color="black" />
-                </TouchableOpacity>
-            ),
-            headerLeftContainerStyle: {
-                paddingLeft: 16,
-            },
-            headerTitleContainerStyle: {},
-
-            headerStyle: {
-                borderBottomColor: 'rgba(189, 189, 189, 1)',
-                borderBottomWidth: 1,
-            },
-        });
+        navigation.setOptions(headerOptions);
     });
 
     useEffect(() => {
@@ -67,51 +80,54 @@ const CreatePostsScreen = () => {
         return <Text>No access to camera</Text>;
     }
 
+    const reset = () => {
+        setPhotoUri(null);
+        setName('');
+        setLocation('');
+    };
+
+    const onPublish = () => {
+        console.log(name);
+        console.log(location);
+        reset();
+    };
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView
                 style={styles.wrapper}
                 enabled
                 behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : -130}
             >
                 <View style={styles.container}>
                     <View>
-                        <View style={styles.camera}>
-                            <TouchableOpacity
-                                style={styles.iconcam}
-                                onPress={() => {
-                                    navigation.navigate('TakeCamera');
-                                }}
-                            >
-                                <FontAwesome name="camera" size={22} color="#BDBDBD" />
-                            </TouchableOpacity>
-                        </View>
-                        <Camera style={styles.camera} type={type} ref={setCameraRef}>
-                            <View style={styles.photoView}>
-                                <TouchableOpacity
-                                    style={styles.flipContainer}
-                                    onPress={() => {
-                                        setType(type === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back);
-                                    }}
-                                >
-                                    <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Flip </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={styles.button}
-                                    onPress={async () => {
-                                        if (cameraRef) {
-                                            const { uri } = await cameraRef.takePictureAsync();
-                                            await MediaLibrary.createAssetAsync(uri);
-                                        }
-                                    }}
-                                >
-                                    <View style={styles.iconcam}>
-                                        <FontAwesome name="camera" size={22} color="#BDBDBD" />
+                        <View style={styles.cameraWrapper}>
+                            {photoUri ? (
+                                <Image source={{ uri: photoUri }} style={styles.camera} />
+                            ) : (
+                                <Camera style={styles.camera} type={type} ref={setCameraRef}>
+                                    <View style={styles.photoView}>
+                                        <TouchableOpacity
+                                            style={styles.button}
+                                            onPress={async () => {
+                                                if (cameraRef) {
+                                                    const { uri } = await cameraRef.takePictureAsync();
+                                                    await MediaLibrary.createAssetAsync(uri);
+                                                    setPhotoUri(uri);
+                                                    console.log('fotho');
+                                                }
+                                            }}
+                                        >
+                                            <View style={styles.iconcam}>
+                                                <FontAwesome name="camera" size={22} color="#BDBDBD" />
+                                            </View>
+                                        </TouchableOpacity>
                                     </View>
-                                </TouchableOpacity>
-                            </View>
-                        </Camera>
+                                </Camera>
+                            )}
+                        </View>
+
                         {/* <MapView
                             style={styles.mapStyle}
                             region={{
@@ -129,17 +145,22 @@ const CreatePostsScreen = () => {
                         </MapView> */}
 
                         <Text style={styles.text}>Завантажте фото</Text>
-                        <TextInput style={styles.input} placeholder="Назва..."></TextInput>
+                        <TextInput style={styles.input} placeholder="Назва..." value={name} onChangeText={setName}></TextInput>
                         <View style={styles.locationWrap}>
                             <Ionicons style={styles.locationIcon} name="ios-location-outline" size={24} color="#BDBDBD" />
-                            <TextInput style={[styles.input, styles.location]} placeholder="Місцевість..."></TextInput>
+                            <TextInput
+                                style={[styles.input, styles.location]}
+                                placeholder="Місцевість..."
+                                value={location}
+                                onChangeText={setLocation}
+                            ></TextInput>
                         </View>
-                        <TouchableOpacity style={styles.registrationBtn}>
+                        <TouchableOpacity style={styles.registrationBtn} onPress={onPublish}>
                             <Text style={[textDefault, styles.registrationBtnText]}>Опублікувати</Text>
                         </TouchableOpacity>
                     </View>
 
-                    <TouchableOpacity style={styles.trash}>
+                    <TouchableOpacity style={styles.trash} onPress={reset}>
                         <Feather name="trash-2" size={24} color="#BDBDBD" />
                     </TouchableOpacity>
                 </View>
@@ -167,20 +188,24 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-between',
     },
-    camera: {
+    cameraWrapper: {
         width: '100%',
-        backgroundColor: '#F6F6F6',
+        height: 240,
+
         borderWidth: 1,
         borderColor: '#DBDBDB',
         borderRadius: 8,
-        height: 240,
-        justifyContent: 'center',
-        alignItems: 'center',
+
         marginBottom: 8,
+
+        overflow: 'hidden',
+        backgroundColor: '#F6F6F6',
     },
-    flipContainer: {
-        flex: 0.1,
-        alignSelf: 'flex-end',
+    camera: {
+        width: '100%',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 
     button: { alignSelf: 'center' },

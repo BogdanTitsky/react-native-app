@@ -16,9 +16,42 @@ import {
 
 import MapView, { Marker } from 'react-native-maps';
 import ProfilePost from '../Components/ProfilePost';
+import { Feather } from '@expo/vector-icons';
 
 const PostsScreen = () => {
     const navigation = useNavigation();
+
+    const headerOptions = {
+        title: 'Публікації',
+        headerTitleStyle: {
+            fontFamily: 'Roboto_500Medium',
+            lineHeight: 22,
+        },
+        headerTitleAlign: 'center',
+
+        headerRight: logoutButton,
+
+        headerRightContainerStyle: {
+            paddingRight: 16,
+        },
+        headerTitleContainerStyle: {
+            paddingLeft: 16,
+        },
+        headerStyle: {
+            borderBottomColor: 'rgba(189, 189, 189, 1)',
+            borderBottomWidth: 1,
+        },
+    };
+
+    useEffect(() => {
+        navigation.setOptions(headerOptions);
+    });
+
+    const logoutButton = () => (
+        <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
+            <Feather name="log-out" size={24} color="rgba(189, 189, 189, 1)" />
+        </TouchableOpacity>
+    );
 
     return (
         <View style={styles.container}>
@@ -34,7 +67,7 @@ const PostsScreen = () => {
                     <Text style={styles.email}>Email</Text>
                 </View>
             </View>
-            <ProfilePost></ProfilePost>
+            <ProfilePost />
         </View>
     );
 };

@@ -12,17 +12,10 @@ import PostsScreen from './PostsScreen';
 import CreatePostsScreen from './CreatePostsScreen';
 import ProfileScreen from './ProfileScreen';
 import TakeCamera from '../Components/TakeCamera';
+import CommentsScreen from './CommentsScreen';
 
 const Home = () => {
-    const navigation = useNavigation();
-
     const Tabs = createBottomTabNavigator();
-
-    const logoutButton = () => (
-        <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
-            <Feather name="log-out" size={24} color="rgba(189, 189, 189, 1)" />
-        </TouchableOpacity>
-    );
 
     return (
         <Tabs.Navigator
@@ -62,43 +55,19 @@ const Home = () => {
         >
             <Tabs.Screen
                 name="Posts"
-                component={PostsScreen}
+                component={ProfileScreenStackCreator}
                 options={{
-                    title: 'Публікації',
-                    headerTitleStyle: {
-                        fontFamily: 'Roboto_500Medium',
-                        lineHeight: 22,
-                    },
-                    headerTitleAlign: 'center',
-
-                    headerRight: logoutButton,
-
-                    headerRightContainerStyle: {
-                        paddingRight: 16,
-                    },
-                    headerTitleContainerStyle: {
-                        paddingLeft: 16,
-                    },
-                    headerStyle: {
-                        borderBottomColor: 'rgba(189, 189, 189, 1)',
-                        borderBottomWidth: 1,
-                    },
+                    headerShown: false,
                 }}
             />
             <Tabs.Screen
                 name="CreatePost"
-                component={CreatePostsScreen}
+                component={CreatePostStackCreator}
                 options={{
-                    title: 'Створити публікацію',
-                    headerTitleStyle: {
-                        fontFamily: 'Roboto_500Medium',
-                        lineHeight: 22,
-                    },
-                    headerTitleAlign: 'center',
+                    headerShown: false,
                     tabBarStyle: { display: 'none' },
                 }}
             />
-
             <Tabs.Screen
                 name="Profile"
                 component={ProfileScreen}
@@ -106,26 +75,19 @@ const Home = () => {
                     headerShown: false,
                 }}
             />
-            <Tabs.Screen
-                name="Client"
-                component={ClientStackCreator}
-                options={({ route }) => ({
-                    tabBarShowLabel: false, // Приховуємо текст вкладки
-                    tabBarStyle: { display: 'none' }, // При
-                })}
-            />
         </Tabs.Navigator>
     );
 };
 
-const ClientStackCreator = () => {
+const ProfileScreenStackCreator = () => {
     const ClientStack = createStackNavigator();
 
     return (
         <ClientStack.Navigator>
+            <ClientStack.Screen name="PostMain" component={PostsScreen} />
             <ClientStack.Screen
                 name="Comments"
-                component={CreatePostsScreen}
+                component={CommentsScreen}
                 options={{
                     title: 'Коментарі',
                     headerTitleStyle: {
@@ -134,8 +96,6 @@ const ClientStackCreator = () => {
                     },
                     headerTitleAlign: 'center',
 
-                    headerRight: logoutButton,
-
                     headerRightContainerStyle: {
                         paddingRight: 16,
                     },
@@ -149,12 +109,20 @@ const ClientStackCreator = () => {
                     },
                 }}
             />
+        </ClientStack.Navigator>
+    );
+};
+
+const CreatePostStackCreator = () => {
+    const ClientStack = createStackNavigator();
+    return (
+        <ClientStack.Navigator>
+            <ClientStack.Screen name="CreatePostMain" component={CreatePostsScreen} />
             <ClientStack.Screen
                 name="TakeCamera"
                 component={TakeCamera}
                 options={{
                     title: 'Камера',
-                    // інші налаштування заголовка
                 }}
             />
         </ClientStack.Navigator>

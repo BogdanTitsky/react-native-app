@@ -49,7 +49,7 @@ const RegistrationScreen = () => {
             <KeyboardAvoidingView
                 style={styles.wrapper}
                 enabled
-                behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+                behavior={Platform.OS == 'ios' ? 'padding' : 'padding'}
                 keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : -130}
             >
                 <ImageBackground style={styles.imageBackground} resizeMode="stretch" source={BackgroundImage}>
