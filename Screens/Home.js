@@ -11,6 +11,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import PostsScreen from './PostsScreen';
 import CreatePostsScreen from './CreatePostsScreen';
 import ProfileScreen from './ProfileScreen';
+import TakeCamera from '../Components/TakeCamera';
 
 const Home = () => {
     const navigation = useNavigation();
@@ -105,6 +106,14 @@ const Home = () => {
                     headerShown: false,
                 }}
             />
+            <Tabs.Screen
+                name="Client"
+                component={ClientStackCreator}
+                options={({ route }) => ({
+                    tabBarShowLabel: false, // Приховуємо текст вкладки
+                    tabBarStyle: { display: 'none' }, // При
+                })}
+            />
         </Tabs.Navigator>
     );
 };
@@ -138,6 +147,14 @@ const ClientStackCreator = () => {
                         borderBottomColor: 'rgba(189, 189, 189, 1)',
                         borderBottomWidth: 1,
                     },
+                }}
+            />
+            <ClientStack.Screen
+                name="TakeCamera"
+                component={TakeCamera}
+                options={{
+                    title: 'Камера',
+                    // інші налаштування заголовка
                 }}
             />
         </ClientStack.Navigator>

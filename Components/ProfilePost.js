@@ -27,8 +27,10 @@ const ProfilePost = () => {
             <Text style={styles.title}>Text</Text>
             <View style={styles.reviewsInfo}>
                 <View style={styles.reviews}>
-                    <MaterialCommunityIcons style={{ marginRight: 6 }} name="message-reply" size={24} color={orange} />
-                    <Text style={{ marginRight: 24, fontFamily: 'Roboto_400Regular', fontSize: 16 }}>6</Text>
+                    <TouchableOpacity style={styles.reviews} onPress={() => navigation.navigate('Comments')}>
+                        <MaterialCommunityIcons style={{ marginRight: 6 }} name="message-reply" size={24} color={orange} />
+                        <Text style={{ marginRight: 24, fontFamily: 'Roboto_400Regular', fontSize: 16 }}>6</Text>
+                    </TouchableOpacity>
                     <AntDesign style={{ marginRight: 6 }} name="like2" size={24} color={orange} />
                     <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16 }}>200</Text>
                 </View>

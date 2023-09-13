@@ -1,10 +1,18 @@
 import { useNavigation } from '@react-navigation/native';
-import { useEffect } from 'react';
-import { FontAwesome, Feather } from '@expo/vector-icons';
+
+import React, { useState, useEffect, useRef } from 'react';
+
+import { FontAwesome, Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+
 import { textDefault, orange, darkBlue, black } from '../variables';
 
+import { Camera } from 'expo-camera';
+import * as MediaLibrary from 'expo-media-library';
+
+import MapView, { Marker } from 'react-native-maps';
+import * as Location from 'expo-location';
+
 import {
-    ImageBackground,
     StyleSheet,
     Text,
     TextInput,
@@ -17,17 +25,12 @@ import {
     Dimensions,
 } from 'react-native';
 
-import MapView, { Marker } from 'react-native-maps';
-import * as Location from 'expo-location';
-
-import { Ionicons } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-{
-    /* <SimpleLineIcons name="location-pin" size={24} color="black" />; */
-}
-
 const CreatePostsScreen = () => {
     const navigation = useNavigation();
+
+    const [hasPermission, setHasPermission] = useState(null);
+    const [cameraRef, setCameraRef] = useState(null);
+    const [type, setType] = useState(Camera.Constants.Type.back);
 
     useEffect(() => {
         navigation.setOptions({
@@ -48,6 +51,22 @@ const CreatePostsScreen = () => {
         });
     });
 
+    useEffect(() => {
+        (async () => {
+            const { status } = await Camera.requestCameraPermissionsAsync();
+            await MediaLibrary.requestPermissionsAsync();
+
+            setHasPermission(status === 'granted');
+        })();
+    }, []);
+
+    if (hasPermission === null) {
+        return <View />;
+    }
+    if (hasPermission === false) {
+        return <Text>No access to camera</Text>;
+    }
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView
@@ -59,25 +78,55 @@ const CreatePostsScreen = () => {
                 <View style={styles.container}>
                     <View>
                         <View style={styles.camera}>
-                            <View style={styles.iconcam}>
+                            <TouchableOpacity
+                                style={styles.iconcam}
+                                onPress={() => {
+                                    navigation.navigate('TakeCamera');
+                                }}
+                            >
                                 <FontAwesome name="camera" size={22} color="#BDBDBD" />
-                            </View>
+                            </TouchableOpacity>
                         </View>
+                        <Camera style={styles.camera} type={type} ref={setCameraRef}>
+                            <View style={styles.photoView}>
+                                <TouchableOpacity
+                                    style={styles.flipContainer}
+                                    onPress={() => {
+                                        setType(type === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back);
+                                    }}
+                                >
+                                    <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Flip </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={styles.button}
+                                    onPress={async () => {
+                                        if (cameraRef) {
+                                            const { uri } = await cameraRef.takePictureAsync();
+                                            await MediaLibrary.createAssetAsync(uri);
+                                        }
+                                    }}
+                                >
+                                    <View style={styles.iconcam}>
+                                        <FontAwesome name="camera" size={22} color="#BDBDBD" />
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </Camera>
                         {/* <MapView
-                    style={styles.mapStyle}
-                    region={{
-                        latitude: 37.78825,
-                        longitude: -122.4324,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }}
-                    mapType="standard"
-                    minZoomLevel={15}
-                    onMapReady={() => console.log('Map is ready')}
-                    onRegionChange={() => console.log('Region change')}
-                >
-                    <Marker title="I am here" coordinate={{ latitude: 37.78825, longitude: -122.4324 }} description="Hello" />
-                </MapView> */}
+                            style={styles.mapStyle}
+                            region={{
+                                latitude: 37.78825,
+                                longitude: -122.4324,
+                                latitudeDelta: 0.0922,
+                                longitudeDelta: 0.0421,
+                            }}
+                            mapType="standard"
+                            minZoomLevel={15}
+                            onMapReady={() => console.log('Map is ready')}
+                            onRegionChange={() => console.log('Region change')}
+                        >
+                            <Marker title="I am here" coordinate={{ latitude: 37.78825, longitude: -122.4324 }} description="Hello" />
+                        </MapView> */}
 
                         <Text style={styles.text}>Завантажте фото</Text>
                         <TextInput style={styles.input} placeholder="Назва..."></TextInput>
@@ -86,7 +135,7 @@ const CreatePostsScreen = () => {
                             <TextInput style={[styles.input, styles.location]} placeholder="Місцевість..."></TextInput>
                         </View>
                         <TouchableOpacity style={styles.registrationBtn}>
-                            <Text style={[textDefault, styles.registrationBtnText]}>Увійти</Text>
+                            <Text style={[textDefault, styles.registrationBtnText]}>Опублікувати</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -129,12 +178,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 8,
     },
+    flipContainer: {
+        flex: 0.1,
+        alignSelf: 'flex-end',
+    },
+
+    button: { alignSelf: 'center' },
+
     iconcam: {
         width: 60,
         height: 60,
         borderRadius: 50,
 
-        backgroundColor: 'white',
+        backgroundColor: 'rgba(198, 198, 198, 0.3)',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -164,7 +220,7 @@ const styles = StyleSheet.create({
         paddingLeft: 28,
     },
     mapStyle: {
-        width: Dimensions.get('window').width,
+        width: '100%',
         height: Dimensions.get('window').height,
     },
     registrationBtn: {
