@@ -10,7 +10,7 @@ import {
     View,
     KeyboardAvoidingView,
 } from 'react-native';
-import BackgroundImage from '../assets/PhotoBG.png';
+import BackgroundImage from '../../assets/PhotoBG.png';
 
 import { textDefault, orange, darkBlue, black } from '../variables';
 import { AntDesign, Feather } from '@expo/vector-icons';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import BackgroundImage from '../assets/PhotoBG.png';
-import { AntDesign } from '@expo/vector-icons';
-import { textDefault, orange, darkBlue, black } from '../variables';
+import BackgroundImage from '../../../assets/PhotoBG.png';
+
+import { textDefault, orange, darkBlue, black } from '../../variables';
 import {
     ImageBackground,
     StyleSheet,
@@ -15,28 +15,24 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const RegistrationScreen = () => {
+const LoginScreen = () => {
     const navigation = useNavigation();
 
-    const [login, setLogin] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const [isLoginFocused, setIsLoginFocused] = useState(false);
     const [isEmailFocused, setIsEmailFocused] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleRegistration = () => {
+    const handleLogin = () => {
         const formData = {
-            login,
             email,
             password,
         };
 
         console.log('Form Data:', formData);
-        setLogin('');
         setEmail('');
         setPassword('');
         setShowPassword(false);
@@ -44,28 +40,18 @@ const RegistrationScreen = () => {
         setIsPasswordFocused(false);
         navigation.navigate('Home', { screen: 'Posts' });
     };
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView
                 style={styles.wrapper}
                 enabled
-                behavior={Platform.OS == 'ios' ? 'padding' : 'padding'}
+                behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
                 keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : -130}
             >
                 <ImageBackground style={styles.imageBackground} resizeMode="stretch" source={BackgroundImage}>
                     <View style={styles.container}>
-                        <View style={styles.avatar}>
-                            <AntDesign style={styles.addAvatar} name="pluscircleo" size={25} color={orange} />
-                        </View>
-                        <Text style={[textDefault, styles.registrationText]}>Реєстрація</Text>
-                        <TextInput
-                            style={[styles.input, isLoginFocused && styles.focusedInput]}
-                            placeholder="Логін"
-                            value={login}
-                            onChangeText={setLogin}
-                            onFocus={() => setIsLoginFocused(true)}
-                            onBlur={() => setIsLoginFocused(false)}
-                        />
+                        <Text style={[textDefault, styles.registrationText]}>Увійти</Text>
                         <TextInput
                             style={[styles.input, isEmailFocused && styles.focusedInput]}
                             placeholder="Адреса електронної пошти"
@@ -90,12 +76,12 @@ const RegistrationScreen = () => {
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <TouchableOpacity style={styles.registrationBtn} onPress={handleRegistration}>
-                            <Text style={[textDefault, styles.registrationBtnText]}>Зареєструватися</Text>
+                        <TouchableOpacity style={styles.registrationBtn} onPress={handleLogin}>
+                            <Text style={[textDefault, styles.registrationBtnText]}>Увійти</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={textDefault} onPress={() => navigation.navigate('Login')}>
-                                Вже є аккаунт? <Text>Увійти</Text>
+                            <Text style={textDefault} onPress={() => navigation.navigate('Registration')}>
+                                Немає акаунту? <Text style={styles.underline}>Зареєструватися</Text>
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -121,6 +107,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingHorizontal: 16,
         paddingBottom: 45,
+        paddingTop: 32,
 
         borderTopLeftRadius: 25,
         borderTopRightRadius: 25,
@@ -194,6 +181,9 @@ const styles = StyleSheet.create({
     registrationBtnText: {
         color: 'white',
     },
+    underline: {
+        textDecorationLine: 'underline',
+    },
 });
 
-export default RegistrationScreen;
+export default LoginScreen;

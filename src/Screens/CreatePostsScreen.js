@@ -23,9 +23,9 @@ import {
     View,
     KeyboardAvoidingView,
     Image,
-    Dimensions,
     Platform,
 } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const CreatePostsScreen = () => {
     const navigation = useNavigation();
@@ -93,58 +93,54 @@ const CreatePostsScreen = () => {
     };
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <KeyboardAvoidingView
-                style={styles.wrapper}
-                enabled
-                behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : -130}
-            >
-                <View style={styles.container}>
-                    <View>
-                        <View style={styles.cameraWrapper}>
-                            {photoUri ? (
-                                <Image source={{ uri: photoUri }} style={styles.camera} />
-                            ) : (
-                                <Camera style={styles.camera} type={type} ref={setCameraRef}>
-                                    <View style={styles.photoView}>
-                                        <TouchableOpacity
-                                            style={styles.button}
-                                            onPress={async () => {
-                                                if (cameraRef) {
-                                                    const { uri } = await cameraRef.takePictureAsync();
-                                                    await MediaLibrary.createAssetAsync(uri);
-                                                    setPhotoUri(uri);
-                                                    console.log('fotho');
-                                                }
-                                            }}
-                                        >
-                                            <View style={styles.iconcam}>
-                                                <FontAwesome name="camera" size={22} color="#BDBDBD" />
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                </Camera>
-                            )}
-                        </View>
+        <TouchableWithoutFeedback style={styles.wrapper} onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+                <ScrollView style={{ flexGrow: 1 }}>
+                    <View style={styles.cameraWrapper}>
+                        {photoUri ? (
+                            <Image source={{ uri: photoUri }} style={styles.camera} />
+                        ) : (
+                            <Camera style={styles.camera} type={type} ref={setCameraRef}>
+                                <View style={styles.photoView}>
+                                    <TouchableOpacity
+                                        style={styles.button}
+                                        onPress={async () => {
+                                            if (cameraRef) {
+                                                const { uri } = await cameraRef.takePictureAsync();
+                                                await MediaLibrary.createAssetAsync(uri);
+                                                setPhotoUri(uri);
+                                                console.log('fotho');
+                                            }
+                                        }}
+                                    >
+                                        <View style={styles.iconcam}>
+                                            <FontAwesome name="camera" size={22} color="#BDBDBD" />
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </Camera>
+                        )}
+                    </View>
 
-                        {/* <MapView
-                            style={styles.mapStyle}
-                            region={{
-                                latitude: 37.78825,
-                                longitude: -122.4324,
-                                latitudeDelta: 0.0922,
-                                longitudeDelta: 0.0421,
-                            }}
-                            mapType="standard"
-                            minZoomLevel={15}
-                            onMapReady={() => console.log('Map is ready')}
-                            onRegionChange={() => console.log('Region change')}
-                        >
-                            <Marker title="I am here" coordinate={{ latitude: 37.78825, longitude: -122.4324 }} description="Hello" />
-                        </MapView> */}
+                    {/* <MapView
+                                    style={styles.mapStyle}
+                                    region={{
+                                        latitude: 37.78825,
+                                        longitude: -122.4324,
+                                        latitudeDelta: 0.0922,
+                                        longitudeDelta: 0.0421,
+                                    }}
+                                    mapType="standard"
+                                    minZoomLevel={15}
+                                    onMapReady={() => console.log('Map is ready')}
+                                    onRegionChange={() => console.log('Region change')}
+                                >
+                                    <Marker title="I am here" coordinate={{ latitude: 37.78825, longitude: -122.4324 }} description="Hello" />
+                                </MapView> */}
 
-                        <Text style={styles.text}>Завантажте фото</Text>
+                    <Text style={styles.text}>Завантажте фото</Text>
+
+                    <KeyboardAvoidingView behavior={Platform.OS == 'ios' ? 'padding' : 'padding'}>
                         <TextInput style={styles.input} placeholder="Назва..." value={name} onChangeText={setName}></TextInput>
                         <View style={styles.locationWrap}>
                             <Ionicons style={styles.locationIcon} name="ios-location-outline" size={24} color="#BDBDBD" />
@@ -158,13 +154,13 @@ const CreatePostsScreen = () => {
                         <TouchableOpacity style={styles.registrationBtn} onPress={onPublish}>
                             <Text style={[textDefault, styles.registrationBtnText]}>Опублікувати</Text>
                         </TouchableOpacity>
-                    </View>
 
-                    <TouchableOpacity style={styles.trash} onPress={reset}>
-                        <Feather name="trash-2" size={24} color="#BDBDBD" />
-                    </TouchableOpacity>
-                </View>
-            </KeyboardAvoidingView>
+                        <TouchableOpacity style={styles.trash} onPress={reset}>
+                            <Feather name="trash-2" size={24} color="#BDBDBD" />
+                        </TouchableOpacity>
+                    </KeyboardAvoidingView>
+                </ScrollView>
+            </View>
         </TouchableWithoutFeedback>
     );
 };
@@ -179,7 +175,6 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingHorizontal: 16,
         paddingTop: 32,
-        paddingBottom: 34,
 
         borderTopColor: 'black',
 
@@ -187,6 +182,8 @@ const styles = StyleSheet.create({
 
         flexDirection: 'column',
         justifyContent: 'space-between',
+
+        position: 'relative',
     },
     cameraWrapper: {
         width: '100%',
@@ -244,10 +241,7 @@ const styles = StyleSheet.create({
         marginBottom: 32,
         paddingLeft: 28,
     },
-    mapStyle: {
-        width: '100%',
-        height: Dimensions.get('window').height,
-    },
+
     registrationBtn: {
         width: '100%',
         height: 50,
@@ -265,8 +259,10 @@ const styles = StyleSheet.create({
     },
     trash: {
         alignSelf: 'center',
+
         width: 70,
         height: 40,
+
         justifyContent: 'center',
         alignItems: 'center',
 

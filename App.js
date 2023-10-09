@@ -1,15 +1,12 @@
-import { StyleSheet, View } from 'react-native';
-
-import RegistrationScreen from './Screens/RegistrationScreen';
-import LoginScreen from './Screens/LoginScreen';
-import Home from './Screens/Home';
+import 'react-native-gesture-handler';
+import React, { useState, useEffect } from 'react';
+import { Text } from 'react-native';
 
 import { useFonts, Roboto_400Regular, Roboto_700Bold, Roboto_500Medium } from '@expo-google-fonts/roboto';
-
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
-const MainStack = createStackNavigator();
+import AppNavigation from './src/AppNavigation';
+import { store, persistor } from './src/redux/store';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
 export default function App() {
     const [fontsLoaded] = useFonts({
@@ -24,18 +21,10 @@ export default function App() {
     }
 
     return (
-        <NavigationContainer>
-            <MainStack.Navigator initialRouteName="Registration">
-                <MainStack.Screen name="Registration" component={RegistrationScreen} options={{ headerShown: false }} />
-                <MainStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-                <MainStack.Screen
-                    name="Home"
-                    component={Home}
-                    options={{
-                        headerShown: false,
-                    }}
-                />
-            </MainStack.Navigator>
-        </NavigationContainer>
+        <Provider store={store}>
+            <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+                <AppNavigation />
+            </PersistGate>
+        </Provider>
     );
 }
