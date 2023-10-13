@@ -15,9 +15,14 @@ import BackgroundImage from '../../assets/PhotoBG.png';
 import { textDefault, orange, darkBlue, black } from '../variables';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import ProfilePost from '../Components/ProfilePost';
+import { useDispatch, useSelector } from 'react-redux';
+import { logOut } from '../redux/auth/authOperation';
+import { selectLogin } from '../redux/auth/authSelectors';
 
 const ProfileScreen = () => {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+    const login = useSelector(selectLogin);
 
     return (
         <ImageBackground style={styles.imageBackground} resizeMode="stretch" source={BackgroundImage}>
@@ -25,8 +30,8 @@ const ProfileScreen = () => {
                 <View style={styles.avatar}>
                     <AntDesign style={styles.addAvatar} name="pluscircleo" size={25} color={orange} />
                 </View>
-                <Text style={styles.name}>User Name</Text>
-                <TouchableOpacity style={styles.logout} onPress={() => navigation.navigate('Registration')}>
+                <Text style={styles.name}>{login}</Text>
+                <TouchableOpacity style={styles.logout} onPress={() => dispatch(logOut())}>
                     <Feather name="log-out" size={24} color="rgba(189, 189, 189, 1)" />
                 </TouchableOpacity>
                 <ProfilePost></ProfilePost>

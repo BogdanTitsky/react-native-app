@@ -51,7 +51,6 @@ const LoginScreen = () => {
                 return;
             }
             setToDefault();
-            navigation.navigate('Home', { screen: 'Posts' });
         });
     };
 

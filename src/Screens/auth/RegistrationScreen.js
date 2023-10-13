@@ -54,7 +54,6 @@ const RegistrationScreen = () => {
                     return;
                 }
                 setToDefault();
-                navigation.navigate('Home', { screen: 'Posts' });
             });
         } catch (error) {
             console.log(error);
