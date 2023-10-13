@@ -31,6 +31,15 @@ const RegistrationScreen = () => {
 
     const [showPassword, setShowPassword] = useState(false);
 
+    const setToDefault = () => {
+        setLogin('');
+        setEmail('');
+        setPassword('');
+        setShowPassword(false);
+        setIsEmailFocused(false);
+        setIsPasswordFocused(false);
+    };
+
     const handleRegistration = async () => {
         try {
             const formData = {
@@ -38,16 +47,15 @@ const RegistrationScreen = () => {
                 email,
                 password,
             };
-            const user = dispatch(registerDB(formData));
-
-            setLogin('');
-            setEmail('');
-            setPassword('');
-            setShowPassword(false);
-            setIsEmailFocused(false);
-            setIsPasswordFocused(false);
-            navigation.navigate('Home', { screen: 'Posts' });
-            return user;
+            dispatch(registerDB(formData)).then((data) => {
+                console.log(data);
+                if (!data) {
+                    alert(`Реєстрацію не виконано!`);
+                    return;
+                }
+                setToDefault();
+                navigation.navigate('Home', { screen: 'Posts' });
+            });
         } catch (error) {
             console.log(error);
         }

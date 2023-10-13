@@ -14,9 +14,13 @@ import {
     KeyboardAvoidingView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { FIREBASE_AUTH } from '../../firebase/config';
+import { loginDB } from '../../redux/auth/authOperation';
+import { useDispatch } from 'react-redux';
 
 const LoginScreen = () => {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -26,19 +30,29 @@ const LoginScreen = () => {
 
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleLogin = () => {
-        const formData = {
-            email,
-            password,
-        };
-
-        console.log('Form Data:', formData);
+    const setToDefault = () => {
         setEmail('');
         setPassword('');
         setShowPassword(false);
         setIsEmailFocused(false);
         setIsPasswordFocused(false);
-        navigation.navigate('Home', { screen: 'Posts' });
+    };
+
+    const handleLogin = () => {
+        if (!email.trim() || !password.trim()) return console.warn('Будь ласка заповніть поля');
+
+        const formData = {
+            email,
+            password,
+        };
+        dispatch(loginDB(formData)).then((data) => {
+            if (!data) {
+                alert(`Error login or password`);
+                return;
+            }
+            setToDefault();
+            navigation.navigate('Home', { screen: 'Posts' });
+        });
     };
 
     return (
