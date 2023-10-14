@@ -1,18 +1,7 @@
-import { useNavigation } from '@react-navigation/native';
-import {
-    ImageBackground,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    Keyboard,
-    TouchableWithoutFeedback,
-    View,
-    KeyboardAvoidingView,
-} from 'react-native';
+import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import BackgroundImage from '../../assets/PhotoBG.png';
 
-import { textDefault, orange, darkBlue, black } from '../variables';
+import { orange } from '../variables';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import ProfilePost from '../Components/ProfilePost';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,7 +9,6 @@ import { logOut } from '../redux/auth/authOperation';
 import { selectLogin } from '../redux/auth/authSelectors';
 
 const ProfileScreen = () => {
-    const navigation = useNavigation();
     const dispatch = useDispatch();
     const login = useSelector(selectLogin);
 

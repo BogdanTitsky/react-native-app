@@ -17,10 +17,17 @@ import {
 import MapView, { Marker } from 'react-native-maps';
 import ProfilePost from '../Components/ProfilePost';
 import { Feather } from '@expo/vector-icons';
+import { useDispatch } from 'react-redux';
+import { logOut } from '../redux/auth/authOperation';
 
 const PostsScreen = () => {
+    const dispatch = useDispatch();
     const navigation = useNavigation();
-
+    const logoutButton = () => (
+        <TouchableOpacity onPress={() => dispatch(logOut())}>
+            <Feather name="log-out" size={24} color="rgba(189, 189, 189, 1)" />
+        </TouchableOpacity>
+    );
     const headerOptions = {
         title: 'Публікації',
         headerTitleStyle: {
@@ -46,12 +53,6 @@ const PostsScreen = () => {
     useEffect(() => {
         navigation.setOptions(headerOptions);
     });
-
-    const logoutButton = () => (
-        <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
-            <Feather name="log-out" size={24} color="rgba(189, 189, 189, 1)" />
-        </TouchableOpacity>
-    );
 
     return (
         <View style={styles.container}>

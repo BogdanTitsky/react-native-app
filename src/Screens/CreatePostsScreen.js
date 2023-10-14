@@ -95,7 +95,7 @@ const CreatePostsScreen = () => {
     return (
         <TouchableWithoutFeedback style={styles.wrapper} onPress={Keyboard.dismiss}>
             <View style={styles.container}>
-                <ScrollView style={{ flexGrow: 1 }}>
+                <ScrollView>
                     <View style={styles.cameraWrapper}>
                         {photoUri ? (
                             <Image source={{ uri: photoUri }} style={styles.camera} />
@@ -139,7 +139,6 @@ const CreatePostsScreen = () => {
                                 </MapView> */}
 
                     <Text style={styles.text}>Завантажте фото</Text>
-
                     <KeyboardAvoidingView behavior={Platform.OS == 'ios' ? 'padding' : 'padding'}>
                         <TextInput style={styles.input} placeholder="Назва..." value={name} onChangeText={setName}></TextInput>
                         <View style={styles.locationWrap}>
@@ -154,47 +153,38 @@ const CreatePostsScreen = () => {
                         <TouchableOpacity style={styles.registrationBtn} onPress={onPublish}>
                             <Text style={[textDefault, styles.registrationBtnText]}>Опублікувати</Text>
                         </TouchableOpacity>
-
-                        <TouchableOpacity style={styles.trash} onPress={reset}>
-                            <Feather name="trash-2" size={24} color="#BDBDBD" />
-                        </TouchableOpacity>
                     </KeyboardAvoidingView>
+                    <TouchableOpacity style={styles.trash} onPress={reset}>
+                        <Feather name="trash-2" size={24} color="#BDBDBD" />
+                    </TouchableOpacity>
                 </ScrollView>
             </View>
         </TouchableWithoutFeedback>
     );
 };
 
+// ...
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,
     },
     container: {
         flex: 1,
-
         width: '100%',
         paddingHorizontal: 16,
         paddingTop: 32,
-
-        borderTopColor: 'black',
-
         backgroundColor: 'white',
-
         flexDirection: 'column',
         justifyContent: 'space-between',
-
         position: 'relative',
     },
     cameraWrapper: {
         width: '100%',
         height: 240,
-
         borderWidth: 1,
         borderColor: '#DBDBDB',
         borderRadius: 8,
-
         marginBottom: 8,
-
         overflow: 'hidden',
         backgroundColor: '#F6F6F6',
     },
@@ -204,25 +194,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-
     button: { alignSelf: 'center' },
-
     iconcam: {
         width: 60,
         height: 60,
         borderRadius: 50,
-
         backgroundColor: 'rgba(198, 198, 198, 0.3)',
         justifyContent: 'center',
         alignItems: 'center',
     },
+
     text: {
         marginBottom: 32,
         color: '#BDBDBD',
         fontSize: 16,
         fontFamily: 'Roboto_400Regular',
     },
-
     input: {
         borderColor: '#DBDBDB',
         borderBottomWidth: 1,
@@ -241,16 +228,13 @@ const styles = StyleSheet.create({
         marginBottom: 32,
         paddingLeft: 28,
     },
-
     registrationBtn: {
         width: '100%',
         height: 50,
         marginBottom: 16,
         paddingVertical: 12,
-
         justifyContent: 'center',
         alignItems: 'center',
-
         borderRadius: 100,
         backgroundColor: orange,
     },
@@ -259,15 +243,16 @@ const styles = StyleSheet.create({
     },
     trash: {
         alignSelf: 'center',
-
+        bottom: 16,
         width: 70,
         height: 40,
-
         justifyContent: 'center',
         alignItems: 'center',
-
         backgroundColor: '#F6F6F6',
         borderRadius: 20,
+
+        marginTop: 30,
     },
 });
+
 export default CreatePostsScreen;
