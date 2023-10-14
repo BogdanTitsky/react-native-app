@@ -26,6 +26,7 @@ import {
     Platform,
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { addPostToDB } from '../redux/posts/postsOperations';
 
 const CreatePostsScreen = () => {
     const navigation = useNavigation();
@@ -87,8 +88,7 @@ const CreatePostsScreen = () => {
     };
 
     const onPublish = () => {
-        console.log(name);
-        console.log(location);
+        addPostToDB({ photoUri, name, location });
         reset();
     };
 

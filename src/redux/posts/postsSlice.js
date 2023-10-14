@@ -11,6 +11,7 @@ export const postSlice = createSlice({
         addComment: (state, { payload }) => ({
             comment: payload,
         }),
+        createPost: (state, { payload }) => ({}),
     },
 });
 

@@ -18,13 +18,12 @@ import { textDefault, orange, darkBlue, black } from '../variables';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
-const ProfilePost = () => {
+const ProfilePost = ({ name, photoUri, location }) => {
     const navigation = useNavigation();
-
     return (
         <View style={styles.container}>
-            <Image source={{ uri: 'http://placehold.it/350x240' }} style={styles.image}></Image>
-            <Text style={styles.title}>Text</Text>
+            <Image source={{ uri: photoUri ? photoUri : 'http://placehold.it/350x240' }} style={styles.image}></Image>
+            <Text style={styles.title}>{name}</Text>
             <View style={styles.reviewsInfo}>
                 <View style={styles.reviews}>
                     <TouchableOpacity style={styles.reviews} onPress={() => navigation.navigate('Comments')}>
@@ -36,7 +35,7 @@ const ProfilePost = () => {
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
                     <Octicons style={{ marginRight: 6 }} name="location" size={24} color="#BDBDBD" />
-                    <Text style={styles.country}>Country</Text>
+                    <Text style={styles.country}>{location}</Text>
                 </View>
             </View>
         </View>
@@ -44,7 +43,7 @@ const ProfilePost = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { width: '100%' },
+    container: { width: '100%', marginBottom: 32 },
     image: {
         width: '100%',
         height: 240,

@@ -17,17 +17,27 @@ import {
 import MapView, { Marker } from 'react-native-maps';
 import ProfilePost from '../Components/ProfilePost';
 import { Feather } from '@expo/vector-icons';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logOut } from '../redux/auth/authOperation';
+import { getPostsFromDB } from '../redux/posts/postsOperations';
+import { useState } from 'react';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import PostsList from '../Components/PostsList';
+import { selectEmail, selectLogin } from '../redux/auth/authSelectors';
 
 const PostsScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const [posts, setPosts] = useState([]);
+    const login = useSelector(selectLogin);
+    const email = useSelector(selectEmail);
+
     const logoutButton = () => (
         <TouchableOpacity onPress={() => dispatch(logOut())}>
             <Feather name="log-out" size={24} color="rgba(189, 189, 189, 1)" />
         </TouchableOpacity>
     );
+
     const headerOptions = {
         title: 'Публікації',
         headerTitleStyle: {
@@ -54,8 +64,18 @@ const PostsScreen = () => {
         navigation.setOptions(headerOptions);
     });
 
+    useEffect(() => {
+        getPostsFromDB()
+            .then((data) => {
+                setPosts(data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.profile}>
                 <Image
                     style={styles.avatar}
@@ -64,12 +84,12 @@ const PostsScreen = () => {
                     }}
                 />
                 <View>
-                    <Text style={styles.login}>Login</Text>
-                    <Text style={styles.email}>Email</Text>
+                    <Text style={styles.login}>{login}</Text>
+                    <Text style={styles.email}>{email}</Text>
                 </View>
             </View>
-            <ProfilePost />
-        </View>
+            <PostsList posts={posts} />
+        </ScrollView>
     );
 };
 
@@ -77,7 +97,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
 
-        width: '100%',
         paddingHorizontal: 16,
         paddingTop: 32,
 
