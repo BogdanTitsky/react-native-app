@@ -1,19 +1,17 @@
-import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import BackgroundImage from '../../assets/PhotoBG.png';
 import { Dimensions } from 'react-native';
 import { orange } from '../variables';
 import { AntDesign, Feather } from '@expo/vector-icons';
-import ProfilePost from '../Components/ProfilePost';
 import { useDispatch, useSelector } from 'react-redux';
 import { authUpdateUser, logOut } from '../redux/auth/authOperation';
-import { selectAvatar, selectLogin } from '../redux/auth/authSelectors';
+import { selectAvatar, selectIsLoggedIn, selectLogin } from '../redux/auth/authSelectors';
 import PostsList from '../Components/PostsList';
 import { useState } from 'react';
 import { getPostsFromDB } from '../redux/posts/postsOperations';
 import { useEffect } from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Image } from 'react-native';
-import { FIREBASE_AUTH } from '../firebase/config';
 import * as ImagePicker from 'expo-image-picker';
 
 const ProfileScreen = () => {
@@ -22,15 +20,24 @@ const ProfileScreen = () => {
     const avatar = useSelector(selectAvatar);
     const [posts, setPosts] = useState([]);
     const [takeAvatar, setTakeAvatar] = useState(null);
+
+    const isLoggedIn = useSelector(selectIsLoggedIn);
+
     useEffect(() => {
-        getPostsFromDB()
-            .then((data) => {
-                setPosts(data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    });
+        if (isLoggedIn) {
+            getPostsFromDB()
+                .then((data) => {
+                    setPosts(data);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+    }, [isLoggedIn, posts]);
+
+    useEffect(() => {
+        setTakeAvatar(avatar);
+    }, [avatar]);
 
     const selectPhoto = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -43,7 +50,6 @@ const ProfileScreen = () => {
         if (!result.canceled) {
             setTakeAvatar(result.assets[0].uri);
         }
-
         dispatch(authUpdateUser({ takeAvatar }));
     };
 
@@ -51,11 +57,17 @@ const ProfileScreen = () => {
         <ScrollView style={styles.wrapper}>
             <Image style={styles.imageBackground} resizeMode="cover" source={BackgroundImage}></Image>
             <View style={styles.container}>
-                <ImageBackground style={styles.avatar} uri={avatar}>
+                <View style={styles.avatarWrapper}>
+                    <Image style={styles.avatar} source={{ uri: takeAvatar }} />
                     <AntDesign onPress={selectPhoto} style={styles.addAvatar} name="pluscircleo" size={25} color={orange} />
-                </ImageBackground>
+                </View>
                 <Text style={styles.name}>{login}</Text>
-                <TouchableOpacity style={styles.logout} onPress={() => dispatch(logOut())}>
+                <TouchableOpacity
+                    style={styles.logout}
+                    onPress={() => {
+                        dispatch(logOut());
+                    }}
+                >
                     <Feather name="log-out" size={24} color="rgba(189, 189, 189, 1)" />
                 </TouchableOpacity>
                 <PostsList posts={posts} />
@@ -85,15 +97,20 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 25,
         backgroundColor: 'white',
     },
-    avatar: {
+    avatarWrapper: {
+        position: 'relative',
         alignSelf: 'center',
-        top: -60,
-        width: 120,
-        height: 120,
         borderRadius: 16,
         backgroundColor: 'rgba(246, 246, 246, 1)',
         marginBottom: 32 - 60,
+        top: -60,
     },
+    avatar: {
+        width: 120,
+        height: 120,
+        borderRadius: 16,
+    },
+
     addAvatar: {
         position: 'absolute',
         right: -12,

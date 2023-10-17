@@ -22,10 +22,6 @@ export const authSlice = createSlice({
         }),
 
         authSignOut: () => authInitialState,
-        addUserAvatar: (state, { payload }) => ({
-            ...state,
-            avatar: payload,
-        }),
     },
 });
 

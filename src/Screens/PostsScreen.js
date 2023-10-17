@@ -23,14 +23,17 @@ import { getPostsFromDB } from '../redux/posts/postsOperations';
 import { useState } from 'react';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import PostsList from '../Components/PostsList';
-import { selectEmail, selectLogin } from '../redux/auth/authSelectors';
+import { selectEmail, selectIsLoggedIn, selectLogin } from '../redux/auth/authSelectors';
 
 const PostsScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
+
     const [posts, setPosts] = useState([]);
+    
     const login = useSelector(selectLogin);
     const email = useSelector(selectEmail);
+    const isLoggedIn = useSelector(selectIsLoggedIn);
 
     const logoutButton = () => (
         <TouchableOpacity onPress={() => dispatch(logOut())}>
@@ -65,14 +68,16 @@ const PostsScreen = () => {
     });
 
     useEffect(() => {
-        getPostsFromDB()
-            .then((data) => {
-                setPosts(data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    });
+        if (isLoggedIn) {
+            getPostsFromDB()
+                .then((data) => {
+                    setPosts(data);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+    }, [isLoggedIn, posts]);
 
     return (
         <ScrollView style={styles.container}>

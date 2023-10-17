@@ -13,9 +13,11 @@ import {
     TouchableWithoutFeedback,
     View,
     KeyboardAvoidingView,
+    Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import * as ImagePicker from 'expo-image-picker';
 
 const RegistrationScreen = () => {
     const navigation = useNavigation();
@@ -24,6 +26,7 @@ const RegistrationScreen = () => {
     const [login, setLogin] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [takeAvatar, setTakeAvatar] = useState(null);
 
     const [isLoginFocused, setIsLoginFocused] = useState(false);
     const [isEmailFocused, setIsEmailFocused] = useState(false);
@@ -40,12 +43,26 @@ const RegistrationScreen = () => {
         setIsPasswordFocused(false);
     };
 
+    const selectPhoto = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setTakeAvatar(result.assets[0].uri);
+        }
+    };
+
     const handleRegistration = async () => {
         try {
             const formData = {
                 login,
                 email,
                 password,
+                photoURL: takeAvatar,
             };
             dispatch(registerDB(formData)).then((data) => {
                 if (!data) {
@@ -63,8 +80,9 @@ const RegistrationScreen = () => {
             <ImageBackground style={styles.imageBackground} resizeMode="stretch" source={BackgroundImage}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.container}>
-                        <View style={styles.avatar}>
-                            <AntDesign style={styles.addAvatar} name="pluscircleo" size={25} color={orange} />
+                        <View style={styles.avatarWrapper}>
+                            <Image style={styles.avatar} source={{ uri: takeAvatar }} />
+                            <AntDesign onPress={selectPhoto} style={styles.addAvatar} name="pluscircleo" size={25} color={orange} />
                         </View>
                         <Text style={[textDefault, styles.registrationText]}>Реєстрація</Text>
                         <KeyboardAvoidingView style={styles.wrapper} behavior={Platform.OS == 'ios' ? 'padding' : 'padding'}>
@@ -138,14 +156,20 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 25,
         backgroundColor: 'white',
     },
-    avatar: {
-        top: -60,
-        width: 120,
-        height: 120,
+    avatarWrapper: {
+        position: 'relative',
+        alignSelf: 'center',
         borderRadius: 16,
         backgroundColor: 'rgba(246, 246, 246, 1)',
         marginBottom: 32 - 60,
+        top: -60,
     },
+    avatar: {
+        width: 120,
+        height: 120,
+        borderRadius: 16,
+    },
+
     addAvatar: {
         position: 'absolute',
         right: -12,

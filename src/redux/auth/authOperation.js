@@ -7,10 +7,10 @@ import { useSelector } from 'react-redux';
 const auth = FIREBASE_AUTH;
 
 export const registerDB =
-    ({ email, password, login, photoURL = undefined }) =>
+    ({ email, password, login, photoURL }) =>
     async (dispatch) => {
         try {
-            await createUserWithEmailAndPassword(auth, email, password, photoURL);
+            await createUserWithEmailAndPassword(auth, email, password);
 
             const user = auth.currentUser;
             await updateProfile(user, {
@@ -18,12 +18,12 @@ export const registerDB =
                 photoURL,
             });
 
-            const { uid, displayName, email: emailBase, avatar: photoUrlBase } = auth.currentUser;
+            const { uid, displayName, email: emailBase, photoURL: photoURLBase } = auth.currentUser;
             const userProfile = {
                 userId: uid,
                 login: displayName,
                 email: emailBase,
-                avatar: photoUrlBase,
+                avatar: photoURLBase,
             };
 
             dispatch(updateUserProfile(userProfile));
@@ -40,18 +40,16 @@ export const loginDB =
         try {
             await signInWithEmailAndPassword(auth, email, password);
             const user = auth.currentUser;
-            console.log(user);
 
-            const { uid, displayName, email: emailBase, photoUrl: photoUrlBase } = auth.currentUser;
+            const { uid, displayName, email: emailBase, photoURL } = auth.currentUser;
             const userProfile = {
                 userId: uid,
                 login: displayName,
                 email: emailBase,
-                avatar: photoUrlBase,
+                avatar: photoURL,
             };
 
             dispatch(updateUserProfile(userProfile));
-            console.log(userProfile);
             return user;
         } catch (error) {
             console.log(error);
@@ -61,13 +59,13 @@ export const loginDB =
 export const authStateChangeUser = () => async (dispatch) => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            const { uid, displayName, email: emailBase, avatar: photoUrlBase } = auth.currentUser;
+            const { uid, displayName, email: emailBase, photoURL } = auth.currentUser;
 
             const userProfile = {
                 userId: uid,
                 login: displayName,
                 email: emailBase,
-                avatar: photoUrlBase,
+                avatar: photoURL,
             };
 
             dispatch(updateUserProfile(userProfile));
@@ -96,13 +94,14 @@ export const authUpdateUser =
 
             dispatch(updateUserProfile(userProfile));
         } catch (error) {
-            return error.code;
+            return console.log(error);
         }
     };
 
 export const logOut = () => async (dispatch) => {
     try {
         await signOut(auth);
+
         dispatch(authSignOut());
     } catch (error) {
         console.log(error);
