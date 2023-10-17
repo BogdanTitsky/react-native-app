@@ -72,7 +72,7 @@ const PostsScreen = () => {
             .catch((error) => {
                 console.error(error);
             });
-    }, []);
+    });
 
     return (
         <ScrollView style={styles.container}>

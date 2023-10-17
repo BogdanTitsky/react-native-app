@@ -48,7 +48,6 @@ const RegistrationScreen = () => {
                 password,
             };
             dispatch(registerDB(formData)).then((data) => {
-                console.log(data);
                 if (!data) {
                     alert(`Реєстрацію не виконано!`);
                     return;

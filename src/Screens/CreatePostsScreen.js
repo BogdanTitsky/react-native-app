@@ -90,6 +90,7 @@ const CreatePostsScreen = () => {
     const onPublish = () => {
         addPostToDB({ photoUri, name, location });
         reset();
+        navigation.navigate('Posts');
     };
 
     return (
