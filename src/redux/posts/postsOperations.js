@@ -2,27 +2,23 @@ import { collection, addDoc, query, where, getDocs, orderBy, Timestamp, setDoc }
 import { FIREBASE_DB, FIREBASE_AUTH } from '../../firebase/config';
 const auth = FIREBASE_AUTH;
 
-export const addPostToDB =
-    ({ photoUri, name, locationName, location }) =>
-    async (dispatch) => {
-        try {
-            const { uid } = auth.currentUser;
-            const createdAt = Timestamp.now();
-            const docRef = await addDoc(collection(FIREBASE_DB, 'posts'), {
-                photoUri,
-                name,
-                location,
-                locationName,
-                userId: uid,
-                createdAt,
-            });
-
-            console.log('Document written with ID: ', docRef.id);
-        } catch (e) {
-            console.error('Error adding document: ', e);
-            throw e;
-        }
-    };
+export const addPostToDB = async ({ photoUri, name, locationName, location }) => {
+    try {
+        const { uid } = auth.currentUser;
+        const createdAt = Timestamp.now();
+        const docRef = await addDoc(collection(FIREBASE_DB, 'posts'), {
+            photoUri,
+            name,
+            location,
+            locationName,
+            userId: uid,
+            createdAt,
+        });
+    } catch (e) {
+        console.error('Error adding document: ', e);
+        throw e;
+    }
+};
 
 export const getPostsFromDB = async () => {
     try {

@@ -87,7 +87,6 @@ const CreatePostsScreen = () => {
 
     const onPublish = async () => {
         const location = await Location.getCurrentPositionAsync();
-        console.log(location);
         addPostToDB({ photoUri, name, locationName, location });
         reset();
         navigation.navigate('Posts');
