@@ -9,6 +9,7 @@ import { selectIsLoggedIn } from './redux/auth/authSelectors';
 import { useSelector, useDispatch } from 'react-redux';
 import { authStateChangeUser } from './redux/auth/authOperation';
 import { useEffect } from 'react';
+import CommentsScreen from './Screens/CommentsScreen';
 
 export default function AppNavigation() {
     const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -35,6 +36,7 @@ export default function AppNavigation() {
                             headerShown: false,
                         }}
                     />
+                    <MainStack.Screen name="Comments" component={CommentsScreen} />
                 </MainStack.Navigator>
             )}
         </NavigationContainer>

@@ -1,21 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
-import {
-    ImageBackground,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    Keyboard,
-    TouchableWithoutFeedback,
-    View,
-    KeyboardAvoidingView,
-    Image,
-    Dimensions,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 
-import MapView, { Marker } from 'react-native-maps';
-import ProfilePost from '../Components/ProfilePost';
 import { Feather } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { logOut } from '../redux/auth/authOperation';
@@ -23,17 +9,18 @@ import { getPostsFromDB } from '../redux/posts/postsOperations';
 import { useState } from 'react';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import PostsList from '../Components/PostsList';
-import { selectEmail, selectIsLoggedIn, selectLogin } from '../redux/auth/authSelectors';
+import { selectAvatar, selectEmail, selectIsLoggedIn, selectLogin } from '../redux/auth/authSelectors';
 
 const PostsScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
     const [posts, setPosts] = useState([]);
-    
+
     const login = useSelector(selectLogin);
     const email = useSelector(selectEmail);
     const isLoggedIn = useSelector(selectIsLoggedIn);
+    const avatar = useSelector(selectAvatar);
 
     const logoutButton = () => (
         <TouchableOpacity onPress={() => dispatch(logOut())}>
@@ -80,33 +67,39 @@ const PostsScreen = () => {
     }, [isLoggedIn, posts]);
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.profile}>
-                <Image
-                    style={styles.avatar}
-                    source={{
-                        uri: 'https://reactnative.dev/img/tiny_logo.png',
-                    }}
-                />
-                <View>
-                    <Text style={styles.login}>{login}</Text>
-                    <Text style={styles.email}>{email}</Text>
+        <ScrollView style={styles.wrapper}>
+            <View style={styles.container}>
+                <View style={styles.profile}>
+                    <Image
+                        style={styles.avatar}
+                        source={{
+                            uri: avatar,
+                        }}
+                    />
+                    <View>
+                        <Text style={styles.login}>{login}</Text>
+                        <Text style={styles.email}>{email}</Text>
+                    </View>
                 </View>
+                <PostsList posts={posts} />
             </View>
-            <PostsList posts={posts} />
         </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
+    wrapper: {
+        height: '100%',
+        backgroundColor: 'white',
+    },
     container: {
-        flex: 1,
-
+        justifyContent: 'center',
+        width: '100%',
         paddingHorizontal: 16,
         paddingTop: 32,
 
-        borderTopColor: 'black',
-
+        borderTopLeftRadius: 25,
+        borderTopRightRadius: 25,
         backgroundColor: 'white',
     },
     avatar: {

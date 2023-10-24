@@ -1,19 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    comment: '',
+    posts: [],
 };
 
 export const postSlice = createSlice({
     name: 'post',
     initialState,
     reducers: {
-        addComment: (state, { payload }) => ({
-            comment: payload,
-        }),
-        createPost: (state, { payload }) => ({
-            comment: '',
-        }),
+        createPost: (state, action) => {
+            state.posts.push(action.payload);
+        },
     },
 });
 

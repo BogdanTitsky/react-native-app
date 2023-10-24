@@ -36,21 +36,25 @@ const ProfileScreen = () => {
     }, [isLoggedIn, posts]);
 
     useEffect(() => {
-        setTakeAvatar(avatar);
-    }, [avatar]);
+        dispatch(authUpdateUser({ takeAvatar }));
+    }, [takeAvatar]);
 
     const selectPhoto = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
+        try {
+            console.log(takeAvatar);
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            });
 
-        if (!result.canceled) {
-            setTakeAvatar(result.assets[0].uri);
+            if (!result.canceled) {
+                setTakeAvatar(result.assets[0].uri);
+            }
+        } catch (error) {
+            console.log(error);
         }
-        dispatch(authUpdateUser({ takeAvatar }));
     };
 
     return (
@@ -58,7 +62,7 @@ const ProfileScreen = () => {
             <Image style={styles.imageBackground} resizeMode="cover" source={BackgroundImage}></Image>
             <View style={styles.container}>
                 <View style={styles.avatarWrapper}>
-                    <Image style={styles.avatar} source={{ uri: takeAvatar }} />
+                    <Image style={styles.avatar} source={{ uri: avatar }} />
                     <AntDesign onPress={selectPhoto} style={styles.addAvatar} name="pluscircleo" size={25} color={orange} />
                 </View>
                 <Text style={styles.name}>{login}</Text>

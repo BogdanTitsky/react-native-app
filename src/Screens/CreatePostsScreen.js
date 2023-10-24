@@ -1,5 +1,4 @@
 import { useNavigation } from '@react-navigation/native';
-import {} from 'react-native';
 
 import React, { useState, useEffect, useRef } from 'react';
 
@@ -10,7 +9,6 @@ import { textDefault, orange, darkBlue, black } from '../variables';
 import { Camera } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 
-import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 import {
@@ -32,7 +30,7 @@ const CreatePostsScreen = () => {
     const navigation = useNavigation();
 
     const [name, setName] = useState('');
-    const [location, setLocation] = useState('');
+    const [locationName, setLocationName] = useState('');
 
     const [hasPermission, setHasPermission] = useState(null);
     const [cameraRef, setCameraRef] = useState(null);
@@ -72,25 +70,35 @@ const CreatePostsScreen = () => {
 
             setHasPermission(status === 'granted');
         })();
-    }, []);
 
-    if (hasPermission === null) {
-        return <View />;
-    }
-    if (hasPermission === false) {
-        return <Text>No access to camera</Text>;
-    }
+        (async () => {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied');
+            }
+        })();
+    }, []);
 
     const reset = () => {
         setPhotoUri(null);
         setName('');
-        setLocation('');
+        setLocationName('');
     };
 
-    const onPublish = () => {
-        addPostToDB({ photoUri, name, location });
+    const onPublish = async () => {
+        const location = await Location.getCurrentPositionAsync();
+        console.log(location);
+        addPostToDB({ photoUri, name, locationName, location });
         reset();
         navigation.navigate('Posts');
+    };
+
+    const takePhoto = async () => {
+        if (cameraRef) {
+            const { uri } = await cameraRef.takePictureAsync();
+            await MediaLibrary.createAssetAsync(uri);
+            setPhotoUri(uri);
+        }
     };
 
     return (
@@ -103,17 +111,7 @@ const CreatePostsScreen = () => {
                         ) : (
                             <Camera style={styles.camera} type={type} ref={setCameraRef}>
                                 <View style={styles.photoView}>
-                                    <TouchableOpacity
-                                        style={styles.button}
-                                        onPress={async () => {
-                                            if (cameraRef) {
-                                                const { uri } = await cameraRef.takePictureAsync();
-                                                await MediaLibrary.createAssetAsync(uri);
-                                                setPhotoUri(uri);
-                                                console.log('fotho');
-                                            }
-                                        }}
-                                    >
+                                    <TouchableOpacity style={styles.button} onPress={takePhoto}>
                                         <View style={styles.iconcam}>
                                             <FontAwesome name="camera" size={22} color="#BDBDBD" />
                                         </View>
@@ -123,22 +121,6 @@ const CreatePostsScreen = () => {
                         )}
                     </View>
 
-                    {/* <MapView
-                                    style={styles.mapStyle}
-                                    region={{
-                                        latitude: 37.78825,
-                                        longitude: -122.4324,
-                                        latitudeDelta: 0.0922,
-                                        longitudeDelta: 0.0421,
-                                    }}
-                                    mapType="standard"
-                                    minZoomLevel={15}
-                                    onMapReady={() => console.log('Map is ready')}
-                                    onRegionChange={() => console.log('Region change')}
-                                >
-                                    <Marker title="I am here" coordinate={{ latitude: 37.78825, longitude: -122.4324 }} description="Hello" />
-                                </MapView> */}
-
                     <Text style={styles.text}>Завантажте фото</Text>
                     <KeyboardAvoidingView behavior={Platform.OS == 'ios' ? 'padding' : 'padding'}>
                         <TextInput style={styles.input} placeholder="Назва..." value={name} onChangeText={setName}></TextInput>
@@ -147,8 +129,8 @@ const CreatePostsScreen = () => {
                             <TextInput
                                 style={[styles.input, styles.location]}
                                 placeholder="Місцевість..."
-                                value={location}
-                                onChangeText={setLocation}
+                                value={locationName}
+                                onChangeText={setLocationName}
                             ></TextInput>
                         </View>
                         <TouchableOpacity style={styles.registrationBtn} onPress={onPublish}>
@@ -164,7 +146,6 @@ const CreatePostsScreen = () => {
     );
 };
 
-// ...
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,

@@ -1,10 +1,9 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 
 import { orange } from '../variables';
 
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -13,6 +12,7 @@ import CreatePostsScreen from './CreatePostsScreen';
 import ProfileScreen from './ProfileScreen';
 import TakeCamera from '../Components/TakeCamera';
 import CommentsScreen from './CommentsScreen';
+import MapScreen from './MapScreen';
 
 const Home = () => {
     const Tabs = createBottomTabNavigator();
@@ -55,7 +55,7 @@ const Home = () => {
         >
             <Tabs.Screen
                 name="Posts"
-                component={ProfileScreenStackCreator}
+                component={PostsScreenStackCreator}
                 options={{
                     headerShown: false,
                 }}
@@ -65,12 +65,12 @@ const Home = () => {
                 component={CreatePostStackCreator}
                 options={{
                     headerShown: false,
-                    tabBarStyle: { display: 'none' },
                 }}
+                tabBarVisible={false}
             />
             <Tabs.Screen
                 name="Profile"
-                component={ProfileScreen}
+                component={ProfileScreenStackCreator}
                 options={{
                     headerShown: false,
                 }}
@@ -78,35 +78,45 @@ const Home = () => {
         </Tabs.Navigator>
     );
 };
-
 const ProfileScreenStackCreator = () => {
     const ClientStack = createStackNavigator();
 
     return (
         <ClientStack.Navigator>
-            <ClientStack.Screen name="PostMain" component={PostsScreen} />
             <ClientStack.Screen
-                name="Comments"
-                component={CommentsScreen}
+                name="ProfileMain"
+                component={ProfileScreen}
                 options={{
-                    title: 'Коментарі',
-                    headerTitleStyle: {
-                        fontFamily: 'Roboto_500Medium',
-                        lineHeight: 22,
-                    },
-                    headerTitleAlign: 'center',
+                    headerShown: false,
+                }}
+            />
 
-                    headerRightContainerStyle: {
-                        paddingRight: 16,
-                    },
-                    headerTitleContainerStyle: {
-                        paddingLeft: 16,
-                    },
+            <ClientStack.Screen
+                name="Map"
+                component={MapScreen}
+                options={{
+                    headerShown: false,
+                    tabBarVisible: false,
+                    tabBarStyle: { display: 'none' },
+                }}
+                tabBarVisible={false}
+            />
+        </ClientStack.Navigator>
+    );
+};
+const PostsScreenStackCreator = () => {
+    const ClientStack = createStackNavigator();
 
-                    headerStyle: {
-                        borderBottomColor: 'rgba(189, 189, 189, 1)',
-                        borderBottomWidth: 1,
-                    },
+    return (
+        <ClientStack.Navigator>
+            <ClientStack.Screen name="PostMain" component={PostsScreen} />
+
+            <ClientStack.Screen
+                name="Map"
+                component={MapScreen}
+                options={{
+                    headerShown: false,
+                    tabBarVisible: false,
                 }}
             />
         </ClientStack.Navigator>
@@ -119,10 +129,10 @@ const CreatePostStackCreator = () => {
         <ClientStack.Navigator>
             <ClientStack.Screen name="CreatePostMain" component={CreatePostsScreen} />
             <ClientStack.Screen
-                name="TakeCamera"
-                component={TakeCamera}
+                name="Map"
+                component={MapScreen}
                 options={{
-                    title: 'Камера',
+                    headerShown: false,
                 }}
             />
         </ClientStack.Navigator>

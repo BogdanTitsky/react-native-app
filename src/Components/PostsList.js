@@ -5,8 +5,16 @@ import ProfilePost from './ProfilePost';
 function PostsList({ posts }) {
     return (
         <ScrollView>
-            {posts.map(({ id, data: { name, photoUri, location } }) => (
-                <ProfilePost key={id} name={name} photoUri={photoUri} location={location} />
+            {posts.map(({ id, data: { name, photoUri, locationName, location, comments } }) => (
+                <ProfilePost
+                    key={id}
+                    name={name}
+                    photoUri={photoUri}
+                    locationName={locationName}
+                    location={location}
+                    postId={id}
+                    comments={comments}
+                />
             ))}
         </ScrollView>
     );

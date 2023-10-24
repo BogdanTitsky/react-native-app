@@ -1,8 +1,6 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../firebase/config';
 import { updateUserProfile, authSignOut } from './authSlice';
-import { selectAvatar } from './authSelectors';
-import { useSelector } from 'react-redux';
 
 const auth = FIREBASE_AUTH;
 
@@ -40,6 +38,7 @@ export const loginDB =
         try {
             await signInWithEmailAndPassword(auth, email, password);
             const user = auth.currentUser;
+            console.log(user);
 
             const { uid, displayName, email: emailBase, photoURL } = auth.currentUser;
             const userProfile = {
@@ -48,7 +47,6 @@ export const loginDB =
                 email: emailBase,
                 avatar: photoURL,
             };
-
             dispatch(updateUserProfile(userProfile));
             return user;
         } catch (error) {
